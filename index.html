@@ -2,7 +2,14 @@
 <html lang="tr">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="rehber">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="theme-color" content="#fff6f8">
 <title>rehber</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -20,7 +27,7 @@ h2,h3{margin:0 0 6px;line-height:1.15;font-weight:700}
 h2{font-size:24px}h3{font-size:18px}
 p{margin:6px 0}
 #hdr{position:sticky;top:0;z-index:5;background:rgba(255,246,248,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
-.top{max-width:620px;margin:auto;display:flex;justify-content:space-between;align-items:center;padding:12px 16px}
+.top{max-width:620px;margin:auto;display:flex;justify-content:space-between;align-items:center;padding:max(12px,env(safe-area-inset-top)) 16px 12px}
 .logo{font-size:24px;font-weight:700;letter-spacing:-.02em}.logo span{color:var(--rose)}
 .who{display:flex;gap:10px;align-items:center;font-size:14px}
 main{max-width:620px;margin:auto;padding:14px 14px}
@@ -157,6 +164,7 @@ td.n{text-align:right}
 <nav id="nav"></nav>
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
 <script src="config.js"></script>
+<script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(function () {});</script>
 <script>
 // ===== Rehber – Seite für Mentorinnen, Mesul und Eyalet =====
 {
