@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#fff6f8">
+<title>rehber</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* VOICE: sakin, sade, biraz kız gibi – mentorların haftalık defteri
+   IDEA: bir rehberlik ajandası, her ay büyüyen bir çiçekle
+   PICTURE: Ayın Mentoru saksısı (tohum → filiz → tomurcuk → çiçek)
+   COLOUR and TYPE: pudra pembe zemin, gül rengi vurgu, mürdüm yazı, nane yeşili; Outfit
+   LAYOUT: tek sütun, telefon önce, altta sekmeler */
+:root{--bg:#fff6f8;--card:#fff;--ink:#3b2b47;--muted:#8b7a96;--rose:#e0567f;--roseS:#fde3eb;--lil:#efe7fb;--lilI:#6a4fa3;--mint:#2f9c7f;--mintS:#e0f4ee;--red:#d6404f;--redS:#fde4e6;--amb:#b7791f;--ambS:#fdf1dc;--line:#f1e4ea}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 Outfit,system-ui,sans-serif;padding-bottom:92px;overflow-x:clip}
+h2,h3{margin:0 0 6px;line-height:1.15;font-weight:700}
+h2{font-size:24px}h3{font-size:18px}
+p{margin:6px 0}
+#hdr{position:sticky;top:0;z-index:5;background:rgba(255,246,248,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.top{max-width:620px;margin:auto;display:flex;justify-content:space-between;align-items:center;padding:12px 16px}
+.logo{font-size:24px;font-weight:700;letter-spacing:-.02em}.logo span{color:var(--rose)}
+.who{display:flex;gap:10px;align-items:center;font-size:14px}
+main{max-width:620px;margin:auto;padding:14px 14px}
+.card{background:var(--card);border-radius:20px;padding:16px;margin:0 0 14px;box-shadow:0 2px 0 var(--line),0 8px 24px rgba(224,86,127,.06)}
+.card.soft{background:transparent;box-shadow:none;border:1.5px dashed #ecd3dd}
+.note{background:var(--lil);color:var(--lilI);border-radius:14px;padding:10px 14px;font-weight:600}
+.center{text-align:center}.muted{color:var(--muted)}.small{font-size:13px}.pad{padding:0 6px}
+.eyebrow{font-size:13px;font-weight:600;color:var(--rose);margin:0 0 2px;letter-spacing:.01em}
+.lbl{font-size:13px;font-weight:600;color:var(--muted);margin:14px 0 6px}
+label{display:block;font-size:13px;font-weight:600;color:var(--muted);margin:10px 0}
+input,select{display:block;width:100%;margin-top:5px;font:16px Outfit,system-ui,sans-serif;color:var(--ink);background:#fff;border:1.5px solid #eadbe2;border-radius:12px;padding:10px 12px;min-height:44px}
+input:focus,select:focus{outline:none;border-color:var(--rose);box-shadow:0 0 0 3px var(--roseS)}
+input.sm{max-width:130px}
+input[type=checkbox]{width:20px;height:20px;min-height:0;display:inline-block;margin:0 8px 0 0;accent-color:var(--rose);vertical-align:middle}
+.tg{display:flex;align-items:center;color:var(--ink);font-size:15px;font-weight:500}
+.btn{font:600 16px Outfit,system-ui,sans-serif;background:var(--rose);color:#fff;border:0;border-radius:14px;padding:12px 18px;min-height:46px;cursor:pointer;box-shadow:0 4px 12px rgba(224,86,127,.25)}
+.btn.ghost{background:#fff;color:var(--rose);box-shadow:inset 0 0 0 1.5px #f3c4d3}
+.btn.danger{color:var(--red);box-shadow:inset 0 0 0 1.5px #f1c3c8}
+.btn.wide{width:100%;margin-bottom:12px}
+.btn:disabled{opacity:.5}
+.lnk{background:none;border:0;color:var(--rose);font:600 14px Outfit,system-ui,sans-serif;padding:8px 0;cursor:pointer}
+.lnk.back{margin-bottom:6px}
+:focus-visible{outline:3px solid var(--rose);outline-offset:2px}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.row2{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}.row2>*{flex:1 1 0}.row2>.sm{flex:0 0 110px}
+.lblrow .lbl{margin-bottom:0}
+.mt{margin-top:14px}
+.err{color:var(--red);font-weight:600}
+.quote{margin:4px 4px 16px;padding:0 0 0 14px;border-left:3px solid var(--rose)}
+.quote blockquote{margin:0;font-size:16px;font-style:italic;line-height:1.45}
+.quote figcaption{font-size:12px;color:var(--muted);margin-top:4px}
+.month{display:flex;gap:12px;align-items:center;background:linear-gradient(135deg,#fff 0%,#fff 55%,#fdeef3 100%)}
+.month .pl{flex:none}
+.checks{list-style:none;margin:6px 0 0;padding:0}
+.checks li{display:flex;align-items:center;gap:8px;font-size:14px;padding:3px 0}
+.checks i{width:20px;height:20px;border-radius:50%;border:1.5px solid #e6cfd8;display:grid;place-items:center;font-style:normal;font-size:12px;flex:none;color:#fff}
+.checks li.ok i{background:var(--mint);border-color:var(--mint)}
+.checks span{flex:1}.checks b{font-weight:600;color:var(--muted);font-size:13px;white-space:nowrap}
+.checks li.ok b{color:var(--mint)}
+.gift{background:var(--roseS);color:var(--rose);font-weight:700;border-radius:12px;padding:8px 12px;margin-top:8px}
+.garden{display:flex;gap:6px;overflow-x:auto;padding-top:4px}
+.gm{display:flex;flex-direction:column;align-items:center;font-size:12px;color:var(--muted);flex:none}
+.wnav{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:4px 0 12px}
+.wnav b{font-weight:600;text-align:center}
+.ib{width:44px;height:44px;border-radius:50%;border:0;background:#fff;color:var(--ink);font-size:22px;cursor:pointer;box-shadow:0 2px 0 var(--line)}
+.ib:disabled{opacity:.3}
+.pill{background:var(--roseS);color:var(--rose);font-size:12px;border-radius:99px;padding:2px 8px;margin-left:4px}
+article.mt{background:#fff;border-radius:18px;padding:14px;margin:0 0 10px;box-shadow:0 2px 0 var(--line);cursor:pointer}
+article.mt.none{background:#faf5f7;box-shadow:none}
+.th{font-weight:600;margin:8px 0 2px}
+.cnt{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0 0}
+.cnt span{font-size:13px;font-weight:600;border-radius:99px;padding:3px 10px;background:var(--mintS);color:var(--mint)}
+.cnt .c-fehlt{background:var(--redS);color:var(--red)}
+.cnt .c-online{background:var(--lil);color:var(--lilI)}
+.cnt .c-nacht,.cnt .c-tag{background:var(--ambS);color:var(--amb)}
+.tag{font-size:13px;font-weight:600;border-radius:99px;padding:3px 10px;background:var(--roseS);color:var(--rose)}
+.tag.gray{background:#eee6ea;color:var(--muted)}
+.t-Online,.t-Hibrit{background:var(--lil);color:var(--lilI)}.t-Aktivite{background:var(--mintS);color:var(--mint)}.t-Yatılı{background:var(--ambS);color:var(--amb)}
+.warnc{background:var(--redS);box-shadow:none}.warnc h3{color:var(--red);font-size:16px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:4px 0 12px}
+.chip{font:600 14px Outfit,system-ui,sans-serif;border:1.5px solid #eadbe2;background:#fff;color:var(--ink);border-radius:99px;padding:8px 14px;min-height:40px;cursor:pointer}
+.chip.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.chip.red{border-color:#f1c3c8;color:var(--red)}
+.empty{text-align:center;color:var(--muted);padding:18px 0}
+.b{display:inline-block;font-size:12px;font-weight:600;border-radius:99px;padding:3px 9px;background:#f4eef1;color:var(--muted);white-space:nowrap}
+.b.red{background:var(--redS);color:var(--red)}.b.amber{background:var(--ambS);color:var(--amb)}.b.ok{background:var(--mintS);color:var(--mint)}.b.lil{background:var(--lil);color:var(--lilI)}
+.tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:4px}
+.list{list-style:none;margin:0;padding:0}
+.list li{display:flex;align-items:center;gap:10px;padding:11px 2px;border-bottom:1px solid var(--line)}
+.list li:last-child{border:0}
+.list li[data-a]{cursor:pointer}
+.list li.redrow b{color:var(--red)}
+.list li.off{opacity:.5}
+.grow{flex:1}
+.redline{color:var(--red);font-weight:600;padding:0 6px}
+form.add{display:flex;gap:8px;align-items:center}form.add input{margin:0}form.add .btn{flex:none;width:48px;padding:0;font-size:24px}
+details>summary{cursor:pointer;font-weight:600;list-style:none}
+details>summary::after{content:" ▾";color:var(--muted)}
+details[open]>summary::after{content:" ▴"}
+details.card>summary{padding:2px 0}
+.ocs>summary,.kls>summary{display:block}
+.kls>summary::after,.kls[open]>summary::after{content:none}.kls[open]>summary{margin-bottom:6px}.ocs>summary::after,.ocs[open]>summary::after{content:none}
+.hd{margin-top:10px}
+.prog{list-style:none;margin:8px 0 0;padding:0}
+.prog li{display:grid;grid-template-columns:82px minmax(0,1fr) auto;align-items:center;gap:8px;font-size:14px;padding:3px 0}
+.prog .bar{height:8px;border-radius:99px;background:#f4e8ee;overflow:hidden}.prog .bar.none{background:none}
+.prog .bar i{display:block;height:100%;background:var(--rose);border-radius:99px}
+.prog li.ok .bar i{background:var(--mint)}
+.prog b{font-weight:600;white-space:nowrap}.prog small{color:var(--muted);font-weight:500}
+.seg.mini{display:flex;margin:0 0 10px}.seg.mini button{flex:1}
+.cet{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px}
+.ci{margin:0;background:#fcf7f9;border-radius:14px;padding:8px;text-align:center;color:var(--ink);font-size:14px}
+.ci input{text-align:center;font-size:20px;font-weight:600;padding:6px;margin:4px 0 0;min-height:40px;border-color:transparent;background:#fff}
+.ci small{display:block;color:var(--muted);font-weight:500;font-size:11px}
+.eg{margin:0 0 8px}.eg input{margin:0}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;font-size:13px;width:100%}
+th,td{padding:6px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+td.n{text-align:right}
+.ov{position:fixed;inset:0;background:rgba(59,43,71,.35);z-index:20;display:flex;align-items:flex-end;justify-content:center}
+.sheet{position:relative;background:#fff;width:100%;max-width:620px;max-height:92vh;overflow-y:auto;border-radius:24px 24px 0 0;padding:20px 16px 28px}
+.x{position:absolute;top:10px;right:10px;width:44px;height:44px;border:0;background:#f8eff3;border-radius:50%;font-size:24px;color:var(--ink);cursor:pointer}
+.att{list-style:none;margin:0;padding:0}
+.why{flex-basis:100%;margin-top:4px;min-height:38px;font-size:14px;padding:6px 10px}
+.att li{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.seg{display:inline-flex;background:#f6eef2;border-radius:12px;padding:3px;gap:2px}
+.seg button{border:0;background:none;font:600 13px Outfit,system-ui,sans-serif;color:var(--muted);border-radius:10px;padding:8px 10px;min-height:38px;cursor:pointer}
+.seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.seg button.on.s-da,.seg button.on.s-nacht{background:var(--mint);color:#fff}
+.seg button.on.s-online,.seg button.on.s-tag{background:var(--lilI);color:#fff}
+.seg button.on.s-fehlt{background:var(--red);color:#fff}
+.seg.big{display:flex;margin-bottom:14px}.seg.big button{flex:1;font-size:15px;min-height:42px}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-bottom:12px}
+.stats div{background:#fff;border-radius:16px;padding:10px 6px;text-align:center;box-shadow:0 2px 0 var(--line)}
+.stats b{display:block;font-size:24px}.stats span{font-size:11px;color:var(--muted);line-height:1.2;display:block}
+.stats .r b{color:var(--red)}
+.men .mini{flex:none}
+.ttl{margin:0 0 12px}.sec{margin:18px 4px 8px}
+.code{font-family:ui-monospace,Menlo,monospace;background:var(--roseS);padding:2px 8px;border-radius:8px}
+#nav{position:fixed;left:0;right:0;bottom:0;z-index:6;background:#fff;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(4,1fr);padding-bottom:env(safe-area-inset-bottom)}
+#nav:empty{display:none}
+#nav button{background:none;border:0;font:600 12px Outfit,system-ui,sans-serif;color:var(--muted);padding:9px 2px 11px;cursor:pointer;min-height:58px}
+#nav svg{display:block;width:22px;height:22px;margin:0 auto 3px}
+#nav button[aria-current=true]{color:var(--rose)}
+.toast{position:fixed;left:50%;bottom:80px;transform:translateX(-50%) translateY(10px);background:var(--ink);color:#fff;border-radius:99px;padding:9px 16px;font-weight:600;font-size:14px;opacity:0;pointer-events:none;transition:.2s;z-index:30;max-width:92vw;text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%)}
+@media (prefers-reduced-motion:reduce){.toast{transition:none}}
+@media(max-width:420px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.att li{flex-direction:column;align-items:flex-start}.cet{grid-template-columns:repeat(3,minmax(0,1fr))}}
+</style>
+</head>
+<body>
+<header id="hdr"></header>
+<main id="main"></main>
+<nav id="nav"></nav>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+<script src="config.js"></script>
+<script>
+// ===== Rehber – Seite für Mentorinnen, Mesul und Eyalet =====
+{
+const API = (window.RB_API || '').trim();
+const $ = s => document.querySelector(s);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const LS = { get(k) { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } }, set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }, del(k) { try { localStorage.removeItem(k); } catch (e) {} } };
+const today = () => new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Berlin', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date());
+const addDays = (d, n) => { const p = d.split('-'); const x = new Date(Date.UTC(+p[0], p[1] - 1, +p[2] + n)); return x.toISOString().slice(0, 10); };
+const monday = d => { const p = d.split('-'); const wd = new Date(Date.UTC(+p[0], p[1] - 1, +p[2])).getUTCDay(); return addDays(d, -((wd + 6) % 7)); };
+const dm = d => d ? (+d.slice(8, 10)) + '.' + (+d.slice(5, 7)) + '.' : '';
+const kw = d => { const p = d.split('-'); const t = new Date(Date.UTC(+p[0], p[1] - 1, +p[2])); const day = (t.getUTCDay() + 6) % 7; t.setUTCDate(t.getUTCDate() - day + 3); const f = new Date(Date.UTC(t.getUTCFullYear(), 0, 4)); return 1 + Math.round(((t - f) / 864e5 - 3 + ((f.getUTCDay() + 6) % 7)) / 7); };
+const wkLabel = w => `${kw(w)}. hafta · ${dm(w)}–${dm(addDays(w, 6))}`;
+const MON = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'];
+const GUN = ['Pazar', 'Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi'];
+const gun = d => GUN[new Date(d + 'T12:00:00Z').getUTCDay()];
+const monName = ym => MON[+ym.slice(5, 7) - 1];
+const kl = k => String(k) === '12' ? '11.–12.' : String(k) === 'alle' ? 'Tümü' : k + '.';
+const ARTS = ['Yüz yüze', 'Online', 'Hibrit', 'Aktivite', 'Yatılı'];
+const OPTS = { 'Yüz yüze': [['da', 'geldi'], ['fehlt', 'gelmedi']], 'Online': [['online', 'katıldı'], ['fehlt', 'gelmedi']], 'Hibrit': [['da', 'yüz yüze'], ['online', 'online'], ['fehlt', 'gelmedi']], 'Aktivite': [['da', 'geldi'], ['fehlt', 'gelmedi']], 'Yatılı': [['nacht', 'kaldı'], ['tag', 'gündüz'], ['fehlt', 'gelmedi']] };
+const ST = { da: 'geldi', online: 'online', fehlt: 'gelmedi', nacht: 'kaldı', tag: 'gündüz' };
+
+let cetDraft = null;
+let S = { mode: 'loading', tab: 'woche', week: null, cfg: null, me: null, token: null, ov: null, staff: null, sd: null, sel: null, stab: 'men', klasse: 'alle', period: 'monat', msg: '', reg: false, pin: {} };
+
+async function api(action, data) {
+  const r = await fetch(API, { method: 'POST', body: JSON.stringify(Object.assign({ action }, data || {})) });
+  const j = await r.json();
+  if (!j.ok) throw new Error(j.err || 'Fehler');
+  return j;
+}
+let tt = null;
+function toast(t, ms) { const el = $('#toast'); el.textContent = t; el.className = 'toast show'; clearTimeout(tt); tt = setTimeout(() => el.className = 'toast', ms || 2200); }
+
+// ---------- Pflanze für "Ayın Mentoru" ----------
+function plant(n, size) {
+  const s = size || 120;
+  const stem = n >= 1 ? `<path d="M60 100 C60 85 60 ${n >= 2 ? 55 : 78} 60 ${n >= 2 ? 48 : 74}" stroke="#3fae8f" stroke-width="4" fill="none" stroke-linecap="round"/>` : '';
+  const leaf1 = n >= 1 ? `<path d="M60 86 C48 84 42 76 44 70 C52 70 59 77 60 86Z" fill="#5cc4a3"/>` : '';
+  const leaf2 = n >= 2 ? `<path d="M60 74 C72 72 78 64 76 58 C68 58 61 65 60 74Z" fill="#5cc4a3"/>` : '';
+  const bud = n === 3 ? `<ellipse cx="60" cy="42" rx="7" ry="10" fill="#f39bb6"/><path d="M53 46 C56 40 64 40 67 46" fill="#5cc4a3"/>` : '';
+  const flower = n >= 4 ? [0, 72, 144, 216, 288].map(a => `<ellipse cx="60" cy="30" rx="8" ry="13" fill="#f06b95" transform="rotate(${a} 60 42)"/>`).join('') + `<circle cx="60" cy="42" r="7" fill="#f7c948"/><path d="M92 18l2 5 5 2-5 2-2 5-2-5-5-2 5-2z" fill="#f7c948"/><path d="M26 26l1.5 3.5 3.5 1.5-3.5 1.5-1.5 3.5-1.5-3.5-3.5-1.5 3.5-1.5z" fill="#f7c948"/>` : '';
+  const seed = n === 0 ? `<ellipse cx="60" cy="98" rx="5" ry="3.5" fill="#a77d5c"/>` : '';
+  return `<svg viewBox="0 0 120 130" width="${s}" height="${s * 130 / 120}" aria-hidden="true"><path d="M36 100 h48 l-6 26 h-36z" fill="#e8a37c"/><rect x="32" y="96" width="56" height="9" rx="4" fill="#d98b63"/>${seed}${stem}${leaf1}${leaf2}${bud}${flower}</svg>`;
+}
+function monthCard(ms, mine) {
+  if (!ms) return '';
+  const rows = [
+    [ms.c.weeks, 'Her hafta rehberlik', `${ms.weeksDone} / ${ms.weeksTotal}`],
+    [ms.c.ist, 'Her istişarede', ms.istTotal ? `${ms.istAtt} / ${ms.istTotal}` : 'henüz yok'],
+    [ms.c.yat, 'Bir yatılı', ms.yat ? '✓' : 'bekliyor'],
+    [ms.c.veli, 'Bir veli ziyareti', ms.veli ? '✓' : 'bekliyor']];
+  return `<section class="card month"><div class="pl">${plant(ms.n)}</div><div class="grow"><p class="eyebrow">Ayın Mentoru · ${monName(ms.ym)}</p>
+    <h2>${ms.star ? 'Tebrikler! 🌸' : ms.n + ' / 4'}</h2>
+    <ul class="checks">${rows.map(r => `<li class="${r[0] ? 'ok' : ''}"><i>${r[0] ? '✓' : ''}</i><span>${r[1]}</span><b>${r[2]}</b></li>`).join('')}</ul>
+    ${ms.star ? `<p class="gift">Ayın Mentoru – hediye çeki seni bekliyor! 🎁</p>` : ''}</div></section>`;
+}
+function garden(mon) {
+  if (!mon || mon.length < 2) return '';
+  return `<section class="card"><h3>Bahçem</h3><div class="garden">${mon.map(m => `<div class="gm">${plant(m.n, 54)}<span>${monName(m.ym).slice(0, 3)}</span></div>`).join('')}</div></section>`;
+}
+function quote() {
+  const q = S.cfg && S.cfg.quote; if (!q) return '';
+  return `<figure class="quote"><blockquote>${esc(q.t)}</blockquote><figcaption>${esc(q.a)}${q.q ? ' · ' + esc(q.q) : ''}</figcaption></figure>`;
+}
+
+// ---------- Ansichten ----------
+function render() {
+  const m = $('#main'), n = $('#nav'), h = $('#hdr');
+  h.innerHTML = hdr();
+  if (S.mode === 'nocfg') { m.innerHTML = `<section class="card"><h2>Henüz bağlı değil</h2><p class="muted"><b>config.js</b> içinde web uygulaması adresi eksik.</p></section>`; n.innerHTML = ''; return; }
+  if (S.mode === 'loading') { m.innerHTML = `<p class="center muted">Bir saniye …</p>`; n.innerHTML = ''; return; }
+  if (S.mode === 'start') { m.innerHTML = vStart(); n.innerHTML = ''; return; }
+  if (S.mode === 'mentor') { m.innerHTML = (S.cfg.hinweis ? `<p class="note">${esc(S.cfg.hinweis)}</p>` : '') + ({ woche: vWoche, schueler: vSchueler, veli: vVeli, ich: vIch }[S.tab])(S.me, true) + ov(); n.innerHTML = nav(); return; }
+  if (S.mode === 'staff') { m.innerHTML = vStaff() + ov(); n.innerHTML = ''; return; }
+}
+function hdr() {
+  let r = '';
+  if (S.mode === 'mentor') r = `<div class="who"><b>${esc(S.me.mentor.name)}</b><button class="lnk" data-a="logout">Çıkış</button></div>`;
+  if (S.mode === 'staff') r = `<div class="who"><b>${esc(S.staff.label)}</b><button class="lnk" data-a="logout">Çıkış</button></div>`;
+  return `<div class="top"><div class="logo">rehber<span>.</span></div>${r}</div>`;
+}
+function nav() {
+  const T = [['woche', 'Hafta', '<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/>'], ['schueler', 'Öğrenciler', '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.5 3-6 6.5-6s6.5 2.5 6.5 6M16 4.5a3.5 3.5 0 010 7M18 14c2 .7 3.5 2.8 3.5 6"/>'], ['veli', 'Veli', '<path d="M3 11l9-7 9 7v9a1 1 0 01-1 1h-5v-6h-6v6H4a1 1 0 01-1-1z"/>'], ['ich', 'Çetele', '<path d="M12 21s-7-4.5-7-10a4 4 0 017-2.6A4 4 0 0119 11c0 5.5-7 10-7 10z"/>']];
+  return T.map(t => `<button data-a="tab" data-v="${t[0]}" aria-current="${S.tab === t[0]}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${t[2]}</svg>${t[1]}</button>`).join('');
+}
+function vStart() {
+  const err = S.msg ? `<p class="err">${esc(S.msg)}</p>` : '';
+  return `${quote()}<form class="card" data-f="mentor"><h2>${S.reg ? 'Kayıt ol' : 'Giriş'}</h2>
+    ${S.reg ? `<label>Kayıt kodu<input name="reg" autocomplete="off" autocapitalize="characters" required></label>` : ''}
+    <label>İsim<input name="name" placeholder="örn. Elif K." autocomplete="off" required></label>
+    <label>PIN (4 rakam)<input name="pin" inputmode="numeric" maxlength="4" pattern="[0-9]{4}" autocomplete="off" required></label>
+    ${err}<button class="btn" type="submit">${S.reg ? 'Hesap oluştur' : 'Giriş yap'}</button>
+    <button class="lnk" type="button" data-a="toggleReg">${S.reg ? 'Hesabım var' : 'Yeni misin? Kayıt ol'}</button></form>
+    <form class="card soft" data-f="staff"><h3>Mesul / Eyalet</h3><label>Kod<input name="code" autocomplete="off" autocapitalize="characters" required></label><button class="btn ghost" type="submit">Devam</button></form>`;
+}
+
+// ----- Woche -----
+function weekNav() {
+  const w = S.week, cur = monday(today());
+  return `<div class="wnav"><button class="ib" data-a="wk" data-d="-7" aria-label="önceki hafta">‹</button><b>${wkLabel(w)}${w === cur ? ' <span class="pill">bu hafta</span>' : ''}</b><button class="ib" data-a="wk" data-d="7" aria-label="sonraki hafta" ${w >= cur ? 'disabled' : ''}>›</button></div>`;
+}
+function meetingCard(m, P) {
+  const names = {}; P.students.forEach(s => names[s.id] = s.name);
+  const ids = Object.keys(m.anw || {});
+  const cnt = {}; ids.forEach(id => { cnt[m.anw[id]] = (cnt[m.anw[id]] || 0) + 1; });
+  const miss = ids.filter(id => m.anw[id] === 'fehlt').map(id => (names[id] || '?') + (m.grund && m.grund[id] ? ' (' + m.grund[id] + ')' : ''));
+  if (m.art === 'Yapılmadı') return `<article class="mt none" ${P === S.me ? `data-a="editMt" data-id="${esc(m.id)}"` : ''}><div><span class="tag gray">yapılmadı</span> <span class="muted">${dm(m.datum)}</span></div>${m.thema ? `<p>${esc(m.thema)}</p>` : ''}</article>`;
+  return `<article class="mt" ${P === S.me ? `data-a="editMt" data-id="${esc(m.id)}"` : ''}><div class="row"><span class="tag t-${esc(m.art)}">${esc(m.art)}</span><span class="muted">${dm(m.datum)}${m.uhrzeit ? ' · ' + esc(m.uhrzeit) : ''}</span></div>
+    ${m.thema ? `<p class="th">${esc(m.thema)}</p>` : ''}${m.ort ? `<p class="muted small">📍 ${esc(m.ort)}</p>` : ''}${m.aktivitaet ? `<p class="muted">${esc(m.aktivitaet)}</p>` : ''}
+    <p class="cnt">${Object.keys(ST).filter(k => cnt[k]).map(k => `<span class="c-${k}">${cnt[k]} ${ST[k]}</span>`).join('')}</p>
+    ${miss.length ? `<p class="muted small">Gelmeyen: ${miss.map(esc).join(', ')}</p>` : ''}</article>`;
+}
+function vWoche(P, mine) {
+  const st = P.stats, w = S.week, cur = monday(today());
+  const list = P.meetings.filter(m => m.woche === w);
+  const missing = st.missing.slice(-6);
+  return `${mine ? quote() : ''}${monthCard(P.monate[P.monate.length - 1], mine)}
+  ${st.missing.length ? `<section class="card warnc"><h3>${st.missing.length} haftanın raporu eksik</h3><div class="chips">${missing.map(x => `<button class="chip red" data-a="goWk" data-w="${x}">${kw(x)}. hafta</button>`).join('')}</div></section>` : ''}
+  ${weekNav()}
+  ${list.length ? list.map(m => meetingCard(m, P)).join('') : `<p class="empty">${w < cur ? 'Bu haftanın raporu eksik.' : 'Henüz kayıt yok.'}</p>`}
+  ${mine ? `<div class="row2"><button class="btn" data-a="newMt">+ Rehberlik</button><button class="btn ghost" data-a="noMt">Yapılmadı</button></div>` : ''}`;
+}
+
+// ----- Schülerinnen -----
+function badge(st) {
+  if (st.never) return `<span class="b red">hiç gelmedi</span>`;
+  if (st.miss >= 4) return `<span class="b red">${st.miss} kez üst üste gelmedi</span>`;
+  if (st.miss >= 2) return `<span class="b amber">${st.miss} kez gelmedi</span>`;
+  return '';
+}
+function vSchueler(P, mine) {
+  const act = P.students.filter(s => s.aktiv), old = P.students.filter(s => !s.aktiv);
+  const red = act.filter(s => s.st.red).length;
+  const li = s => `<li class="${s.st.red ? 'redrow' : ''}${s.aktiv ? '' : ' off'}" ${mine ? `data-a="editSt" data-id="${esc(s.id)}"` : ''}><span class="grow"><b>${esc(s.name)}</b><br><span class="muted small">${s.st.n ? `${s.st.n} rehberlikten ${s.st.present} geldi${s.st.nacht + s.st.tag ? ` · yatılı ${s.st.nacht}${s.st.tag ? ' (+' + s.st.tag + ' gündüz)' : ''}` : ''}${s.st.last ? ' · son: ' + dm(s.st.last) : ''}` : 'henüz rehberlik yok'}</span></span>${badge(s.st)}</li>`;
+  return `${mine ? `<form class="card add" data-f="student"><input name="name" placeholder="İsim S.  (örn. Zeynep A.)" autocomplete="off" required><button class="btn" type="submit">+</button></form>` : ''}
+  ${red ? `<p class="redline">${red} öğrenci ilgi bekliyor</p>` : ''}
+  <section class="card"><ul class="list">${act.map(li).join('') || '<li class="muted">Henüz öğrenci eklenmedi.</li>'}</ul></section>
+  ${old.length ? `<details class="card"><summary>Artık grupta değil (${old.length})</summary><ul class="list">${old.map(li).join('')}</ul></details>` : ''}`;
+}
+
+// ----- Veli -----
+function vVeli(P, mine) {
+  const visited = {}; P.veli.forEach(v => visited[v.schuelerin] = 1);
+  const open = P.students.filter(s => s.aktiv && !visited[s.name]);
+  return `${mine ? `<button class="btn wide" data-a="newVeli">+ Veli ziyareti</button>` : ''}
+  ${open.length ? `<p class="muted small pad">Henüz ziyaret yok: ${open.map(s => esc(s.name)).join(', ')}</p>` : ''}
+  <section class="card"><ul class="list">${P.veli.map(v => `<li ${mine ? `data-a="editVeli" data-id="${esc(v.id)}"` : ''}><span class="grow"><b>${esc(v.schuelerin)}</b><br><span class="muted small">${dm(v.datum)}${v.uhrzeit ? ' · ' + esc(v.uhrzeit) : ''} · ${esc(v.begleitung || 'yalnız')}${v.mitwem ? ' (' + esc(v.mitwem) + ')' : ''}</span>${v.notiz ? `<br><span class="small">${esc(v.notiz)}</span>` : ''}</span></li>`).join('') || '<li class="muted">Henüz ziyaret eklenmedi.</li>'}</ul></section>`;
+}
+
+// ----- Çetele: Einträge mit Datum, jederzeit -----
+function weeksIn(ym) { let n = 0, d = monday(ym + '-01'); if (d < ym + '-01') d = addDays(d, 7); for (; d.slice(0, 7) === ym; d = addDays(d, 7)) n++; return n; }
+function prog(rows) {
+  const r = rows.filter(x => x.ist || x.hd);
+  if (!r.length) return '<p class="muted small">Henüz kayıt yok.</p>';
+  return `<ul class="prog">${r.map(x => { const pc = x.hd ? Math.min(100, Math.round(x.ist / x.hd * 100)) : 0, ok = x.hd && x.ist >= x.hd;
+    return `<li class="${ok ? 'ok' : ''}"><span>${esc(x.n)}</span>${x.hd ? `<span class="bar"><i style="width:${pc}%"></i></span>` : '<span class="bar none"></span>'}<b>${x.ist}${x.hd ? ' / ' + x.hd : ''} <small>${esc(x.u)}</small></b></li>`; }).join('')}</ul>`;
+}
+function hmToggle() { return `<div class="seg mini">${[['hafta', 'Hafta'], ['ay', 'Ay']].map(p => `<button class="${(S.view || 'hafta') === p[0] ? 'on' : ''}" data-a="view" data-v="${p[0]}">${p[1]}</button>`).join('')}</div>`; }
+function mentorProg(P) {
+  const list = P.cetele, hd = P.mentor.hedef || {}, w = S.week, ym = w.slice(0, 7);
+  const ay = (S.view || 'hafta') === 'ay';
+  const sum = ay ? cetSum(list, ym + '-01', ym + '-31') : cetSum(list, w, addDays(w, 6)), f = ay ? weeksIn(ym) : 1;
+  return prog(S.cfg.cet.map(k => ({ n: k[1], u: k[2], ist: sum[k[0]] || 0, hd: (+hd[k[0]] || 0) * f })));
+}
+function stuProg(P, s) {
+  const it = S.cfg.oc || [], w = S.week, ym = w.slice(0, 7), ay = (S.view || 'hafta') === 'ay';
+  const t = it.map(() => 0);
+  P.oc.filter(x => x.sid === s.id && (ay ? x.woche.slice(0, 7) === ym : x.woche === w)).forEach(x => x.v.forEach((v, i) => { if (i < t.length) t[i] += +v || 0; }));
+  const f = ay ? weeksIn(ym) : 1;
+  return prog(it.map((x, i) => ({ n: x[0], u: x[1], ist: t[i], hd: (+(s.hedef || [])[i] || 0) * f })));
+}
+function periodLabel() { return (S.view || 'hafta') === 'ay' ? monName(S.week.slice(0, 7)) : wkLabel(S.week); }
+function cetSum(list, from, to) {
+  const o = {}; S.cfg.cet.forEach(k => o[k[0]] = 0);
+  list.filter(x => x.datum >= from && x.datum <= to).forEach(x => S.cfg.cet.forEach(k => { const v = +x[k[0]]; if (v) o[k[0]] += v; }));
+  return o;
+}
+function sumLine(o) { const p = S.cfg.cet.filter(k => o[k[0]]).map(k => `<span class="b lil">${k[1]} ${o[k[0]]} ${k[2]}</span>`); return p.length ? p.join('') : '<span class="muted small">–</span>'; }
+function vOc(P, mine) {
+  const it = S.cfg.oc || [], w = S.week, act = P.students.filter(s => s.aktiv);
+  const of = sid => P.oc.find(x => x.sid === sid && x.woche === w) || { v: [], buch: '', seite: '' };
+  const lastBook = sid => (P.oc.filter(x => x.sid === sid && x.buch).sort((a, b) => a.woche < b.woche ? 1 : -1)[0] || {});
+  const head = `<div class="row">${weekNav()}</div>${hmToggle()}`;
+  if (!mine) return `<h3 class="sec">Öğrenci çetelesi · ${periodLabel()}</h3>${act.map(s => { const b = lastBook(s.id); return `<section class="card"><div class="row"><b>${esc(s.name)}</b><span class="muted small">${b.buch ? '📖 ' + esc(b.buch) + (b.seite ? ' · s. ' + esc(b.seite) : '') : ''}</span></div>${stuProg(P, s)}</section>`; }).join('') || '<p class="empty">Henüz öğrenci yok.</p>'}`;
+  return head + (act.map(s => { const c = of(s.id), b = lastBook(s.id);
+    return `<details class="card ocs"${S.ocOpen === s.id ? ' open' : ''}><summary><div class="row"><b>${esc(s.name)}</b><span class="muted small">${b.buch ? '📖 ' + esc(b.buch) + (b.seite ? ' · s. ' + esc(b.seite) : '') : ''}</span></div>${stuProg(P, s)}</summary>
+      <form data-f="oc" data-id="${esc(s.id)}"><p class="lbl">${wkLabel(w)} için gir</p><div class="cet">${it.map((x, i) => `<label class="ci"><span>${esc(x[0])}</span><input name="v${i}" inputmode="numeric" value="${esc(c.v[i] == null ? '' : c.v[i])}" placeholder="–"><small>${esc(x[1])}</small></label>`).join('')}</div>
+      <div class="row2 mt"><input name="buch" value="${esc(c.buch || b.buch || '')}" placeholder="Okuduğu kitap"><input name="seite" value="${esc(c.seite || '')}" inputmode="numeric" placeholder="Sayfa" class="sm"></div>
+      <button class="btn wide mt" type="submit">Kaydet</button></form>
+      <details class="hd"><summary class="lbl">Haftalık hedef</summary><form data-f="hedef" data-id="${esc(s.id)}"><div class="cet">${it.map((x, i) => `<label class="ci"><span>${esc(x[0])}</span><input name="h${i}" inputmode="numeric" value="${esc((s.hedef || [])[i] == null ? '' : s.hedef[i])}" placeholder="–"><small>${esc(x[1])} / hafta</small></label>`).join('')}</div><button class="btn ghost wide mt" type="submit">Hedefi kaydet</button></form></details></details>`; }).join('') || '<p class="empty">Önce öğrencilerini ekle.</p>');
+}
+function vIch(P, mine) {
+  if (mine && S.cmode === 'ogr') return `<div class="seg big"><button data-a="cmode" data-v="ben">Benim</button><button class="on" data-a="cmode" data-v="ogr">Öğrencilerim</button></div>` + vOc(P, true);
+  const cet = S.cfg.cet, list = P.cetele.slice().sort((a, b) => a.datum < b.datum ? 1 : -1);
+  const last = list[0], t = today(), wk = monday(t);
+  const week = cetSum(list, wk, t), month = cetSum(list, t.slice(0, 8) + '01', t);
+  const book = list.find(x => x.buch);
+  const recent = `<details class="card"><summary>Son kayıtlar</summary><ul class="list">${list.slice(0, 10).map(x => { let eg = []; try { eg = JSON.parse(x.eigene || '[]'); } catch (e) {} return `<li ${mine ? `data-a="cetDay" data-d="${x.datum}"` : ''}><span class="grow"><b>${gun(x.datum)} ${dm(x.datum)}</b><br><span class="tags">${cet.filter(k => +x[k[0]]).map(k => `<span class="b">${k[1]} ${x[k[0]]}</span>`).join('')}${eg.map(g => `<span class="b">${esc(g.n)} ${esc(g.v)}</span>`).join('')}</span></span></li>`; }).join('') || '<li class="muted">Henüz kayıt yok.</li>'}</ul></details>`;
+  const head = `${weekNav()}${hmToggle()}<section class="card"><p class="eyebrow">${last ? `Son kayıt: ${gun(last.datum)} ${dm(last.datum)}` : 'Henüz kayıt yok'}</p>
+    ${mentorProg(P)}
+    ${book ? `<p class="lbl">Okuduğu kitap</p><p>📖 ${esc(book.buch)}${book.seite ? ' · s. ' + esc(book.seite) : ''}</p>` : ''}
+    ${mine ? `<details class="hd"><summary class="lbl">Haftalık hedeflerim</summary><form data-f="hedef"><div class="cet">${cet.map(k => `<label class="ci"><span>${k[1]}</span><input name="${k[0]}" inputmode="numeric" value="${esc((P.mentor.hedef || {})[k[0]] == null ? '' : P.mentor.hedef[k[0]])}" placeholder="–"><small>${k[2]} / hafta</small></label>`).join('')}</div><button class="btn ghost wide mt" type="submit">Hedefleri kaydet</button></form></details>` : ''}</section>`;
+  if (!mine) return `<h3 class="sec">Kendi çetelesi</h3>${head}${recent}` + vOc(P, false) + garden(P.monate);
+  const d = S.cetDate || t, c = list.find(x => x.datum === d) || {};
+  let eig = []; try { eig = JSON.parse(c.eigene || '[]'); } catch (e) {}
+  if (S.extra) eig = S.extra;
+  const dv = k => cetDraft && cetDraft[k] !== undefined ? cetDraft[k] : (c[k] === undefined || c[k] === null ? '' : c[k]);
+  const form = `<form class="card" data-f="cetele"><div class="row"><h3>Yeni kayıt</h3><input type="date" id="cetdate" value="${d}" max="${t}" class="sm"></div>
+      <div class="cet">${cet.map(k => `<label class="ci"><span>${k[1]}</span><input name="${k[0]}" inputmode="numeric" value="${esc(dv(k[0]))}" placeholder="–"><small>${k[2]}</small></label>`).join('')}</div>
+      <details ${eig.length ? 'open' : ''}><summary class="lbl">Diğer</summary><div id="eig">${eig.map((e, i) => `<div class="row2 eg"><input data-eg="n" data-i="${i}" value="${esc(e.n)}" placeholder="örn. Hatim"><input data-eg="v" data-i="${i}" value="${esc(e.v)}" placeholder="miktar" class="sm"></div>`).join('')}</div><button class="lnk" type="button" data-a="addEig">+ satır</button></details>
+      <div class="row2"><input name="buch" value="${esc(cetDraft ? cetDraft.buch : (c.buch || (book ? book.buch : '')))}" placeholder="Okuduğum kitap"><input name="seite" value="${esc(cetDraft ? cetDraft.seite : (c.seite || ''))}" inputmode="numeric" placeholder="Sayfa" class="sm"></div>
+      <button class="btn wide" type="submit">Kaydet</button></form>`;
+  const ist = P.istisare.slice(0, 6);
+  return `<div class="seg big"><button class="on" data-a="cmode" data-v="ben">Benim</button><button data-a="cmode" data-v="ogr">Öğrencilerim</button></div>` + head + form + recent + garden(P.monate) + (ist.length ? `<details class="card"><summary>İstişare</summary><ul class="list">${ist.map(i => `<li><span class="grow">${dm(i.datum)} ${esc(i.thema)}</span>${i.dabei ? '<span class="b ok">katıldı</span>' : '<span class="b red">katılmadı</span>'}</li>`).join('')}</ul></details>` : '');
+}
+
+// ----- Formulare (Overlay) -----
+function ov() {
+  const o = S.ov; if (!o) return '';
+  let body = '';
+  if (o.t === 'mt') {
+    const d = o.d, arts = ARTS.map(a => `<button type="button" class="chip${d.art === a ? ' on' : ''}" data-a="art" data-v="${a}">${a}</button>`).join('');
+    const opts = OPTS[d.art] || OPTS['Yüz yüze'];
+    const studs = S.me.students.filter(s => s.aktiv || d.anw[s.id]);
+    body = `<h2>${d.id ? 'Rehberliği düzenle' : 'Rehberlik'}</h2>
+      <div class="row2"><label>Tarih<input type="date" id="f-datum" value="${esc(d.datum)}" max="${today()}"></label><label>Saat<input type="time" id="f-uhr" value="${esc(d.uhrzeit)}"></label></div>
+      <p class="lbl">Tür</p><div class="chips">${arts}</div>
+      ${d.art === 'Aktivite' || d.art === 'Yatılı' ? `<label>${d.art === 'Yatılı' ? 'Nerede / ne yapıldı?' : 'Ne yapıldı?'}<input id="f-akt" value="${esc(d.aktivitaet)}"></label>` : ''}
+      ${d.art !== 'Online' ? `<label>Yer<input id="f-ort" value="${esc(d.ort || '')}" placeholder="örn. cami, Ayşe ablanın evi"></label>` : ''}
+      <label>Konu<input id="f-thema" value="${esc(d.thema)}"></label>
+      <div class="row lblrow"><p class="lbl">Kimler geldi?</p><button type="button" class="lnk" data-a="allDa">hepsi: ${opts[0][1]}</button></div>
+      <ul class="att">${studs.map(s => `<li><span>${esc(s.name)}</span><span class="seg">${opts.map(o2 => `<button type="button" class="${d.anw[s.id] === o2[0] ? 'on s-' + o2[0] : ''}" data-a="att" data-id="${esc(s.id)}" data-v="${o2[0]}">${o2[1]}</button>`).join('')}</span>${d.anw[s.id] === 'fehlt' ? `<input class="why" list="sebepler" data-grund="${esc(s.id)}" value="${esc((d.grund || {})[s.id] || '')}" placeholder="sebep (isteğe bağlı)">` : ''}</li>`).join('') || '<li class="muted">Önce öğrencilerini ekle.</li>'}</ul><datalist id="sebepler"><option value="haber vermedi"><option value="sınav"><option value="aile"><option value="yolculuk"><option value="hasta"></datalist>`;
+  }
+  if (o.t === 'no') body = `<h2>Rehberlik yapılmadı</h2><label>Hangi hafta (tarih)<input type="date" id="f-datum" value="${esc(o.d.datum)}" max="${today()}"></label><label>Sebep<input id="f-thema" value="${esc(o.d.thema)}" placeholder="örn. tatil, sınavlar"></label>`;
+  if (o.t === 'st') body = `<h2>Öğrenci</h2><label>İsim<input id="f-name" value="${esc(o.d.name)}"></label><label class="tg"><input type="checkbox" id="f-aktiv" ${o.d.aktiv ? 'checked' : ''}> hâlâ grubumda</label>`;
+  if (o.t === 'veli') {
+    const d = o.d, B = ['yalnız', 'mentorla', 'mesulle', 'diğer'];
+    body = `<h2>Veli ziyareti</h2><label>Öğrenci<select id="f-sid"><option value="">seç …</option>${S.me.students.filter(s => s.aktiv || s.id === d.sid).map(s => `<option value="${esc(s.id)}" ${s.id === d.sid ? 'selected' : ''}>${esc(s.name)}</option>`).join('')}</select></label>
+      <div class="row2"><label>Tarih<input type="date" id="f-datum" value="${esc(d.datum)}" max="${today()}"></label><label>Saat<input type="time" id="f-uhr" value="${esc(d.uhrzeit)}"></label></div>
+      <p class="lbl">Kiminle?</p><div class="chips">${B.map(b => `<button type="button" class="chip${d.begleitung === b ? ' on' : ''}" data-a="beg" data-v="${b}">${b}</button>`).join('')}</div>
+      ${d.begleitung && d.begleitung !== 'yalnız' ? `<label>Kim?<input id="f-mit" value="${esc(d.mitwem)}"></label>` : ''}
+      <label>Not (isteğe bağlı)<input id="f-notiz" value="${esc(d.notiz)}"></label>`;
+  }
+  if (o.t === 'ist') {
+    const d = o.d, men = S.sd.list.filter(m => d.klasse === 'alle' || m.klasse === d.klasse);
+    body = `<h2>İstişare</h2><div class="row2"><label>Tarih<input type="date" id="f-datum" value="${esc(d.datum)}"></label>${S.staff.role === 'admin' ? `<label>Kimler için<select id="f-kl">${['alle', '10', '12', '13'].map(k => `<option value="${k}" ${d.klasse === k ? 'selected' : ''}>${kl(k)}</option>`).join('')}</select></label>` : ''}</div>
+      <label>Konu<input id="f-thema" value="${esc(d.thema)}"></label>
+      <div class="row lblrow"><p class="lbl">Kimler katıldı?</p><button type="button" class="lnk" data-a="istAll">hepsi</button></div>
+      <ul class="att">${men.map(m => `<li><label class="tg"><input type="checkbox" data-a="istTn" data-id="${esc(m.id)}" ${d.tn.includes(m.id) ? 'checked' : ''}> ${esc(m.name)} <span class="muted small">${kl(m.klasse)}</span></label></li>`).join('') || '<li class="muted">Henüz kayıtlı mentor yok.</li>'}</ul>`;
+  }
+  const del = o.d && o.d.id && o.t !== 'st' ? `<button class="btn ghost danger" data-a="ovDel">Sil</button>` : '';
+  return `<div class="ov" role="dialog" aria-modal="true"><div class="sheet"><button class="x" data-a="ovClose" aria-label="Kapat">×</button>${body}${S.msg ? `<p class="err">${esc(S.msg)}</p>` : ''}<div class="row2 mt"><button class="btn" data-a="ovSave">Kaydet</button>${del}</div></div></div>`;
+}
+
+// ----- Mesul / Eyalet / Übersicht -----
+function inPeriod(d) {
+  const t = today();
+  if (S.period === 'monat') return d.slice(0, 7) === t.slice(0, 7);
+  if (S.period === '2w') return d >= addDays(monday(t), -7);
+  return true;
+}
+function menList(L) {
+  return L.map(m => {
+      const c = { 'Yatılı': 0, 'Aktivite': 0, 'Online': 0 }; let tr = 0;
+      m.mts.forEach(x => { if (inPeriod(x[0])) { if (x[1] !== 'Yapılmadı') tr++; if (c[x[1]] != null) c[x[1]]++; } });
+      const veli = m.veli.filter(inPeriod).length;
+      return `<li data-a="sel" data-id="${esc(m.id)}"><span class="mini">${plant(m.month.n, 34)}</span><span class="grow"><b>${esc(m.name)}</b> <span class="muted small">${kl(m.klasse)}</span><br>
+        <span class="tags">${m.stats.missing.length ? `<span class="b red">${m.stats.missing.length} rapor eksik</span>` : '<span class="b ok">raporlar ✓</span>'}${m.stats.red ? `<span class="b red">${m.stats.red} kırmızı</span>` : ''}<span class="b">${tr} rehberlik</span>${c['Yatılı'] ? `<span class="b lil">yatılı ${c['Yatılı']}</span>` : ''}${c['Aktivite'] ? `<span class="b lil">aktivite ${c['Aktivite']}</span>` : ''}<span class="b ${veli ? 'lil' : ''}">veli ${veli}</span></span>
+        ${m.stats.buch ? `<br><span class="muted small">📖 ${esc(m.stats.buch)}${m.stats.seite ? ' · s. ' + esc(m.stats.seite) : ''}</span>` : ''}</span></li>`; }).join('') || '<li class="muted">Henüz kayıtlı mentor yok.</li>';
+}
+function vStaff() {
+  const d = S.sd; if (!d) return `<p class="center muted">Yükleniyor …</p>`;
+  if (S.sel && d.detail) {
+    const P = d.detail, ro = S.staff.role === 'chef';
+    return `<button class="lnk back" data-a="back">‹ Tüm mentorlar</button><h2 class="ttl">${esc(P.mentor.name)} <span class="muted">${kl(P.mentor.klasse)} sınıf</span></h2>
+      ${vWoche(P, false)}<h3 class="sec">Öğrenciler</h3>${vSchueler(P, false)}<h3 class="sec">Veli ziyaretleri</h3>${vVeli(P, false)}${vIch(P, false)}
+      ${ro ? '' : `<p>${S.pin[P.mentor.id] ? `Yeni PIN: <b class="code">${esc(S.pin[P.mentor.id])}</b>` : `<button class="btn ghost" data-a="pin" data-id="${esc(P.mentor.id)}">${esc(P.mentor.name)} için yeni PIN</button>`}</p>`}`;
+  }
+  const tabs = `<div class="seg big"><button class="${S.stab === 'men' ? 'on' : ''}" data-a="stab" data-v="men">Mentorlar</button><button class="${S.stab === 'ist' ? 'on' : ''}" data-a="stab" data-v="ist">İstişare</button></div>`;
+  if (S.stab === 'ist') {
+    return `${tabs}${S.staff.role === 'chef' ? '' : `<button class="btn wide" data-a="newIst">+ İstişare</button>`}<section class="card"><ul class="list">${d.ist.map(i => `<li ${S.staff.role === 'chef' ? '' : `data-a="editIst" data-id="${esc(i.id)}"`}><span class="grow"><b>${dm(i.datum)}</b> ${esc(i.thema)}<br><span class="muted small">${kl(i.klasse)} · ${i.teilnehmer.length} katılımcı</span></span></li>`).join('') || '<li class="muted">Henüz istişare eklenmedi.</li>'}</ul></section>`;
+  }
+  const L = d.list.filter(m => S.klasse === 'alle' || m.klasse === S.klasse);
+  const miss = L.filter(m => m.stats.missing.length).length, red = L.reduce((a, m) => a + m.stats.red, 0), stars = L.filter(m => m.month.n >= 3).length;
+  const filt = (S.staff.role === 'mesul' ? '' : `<div class="chips">${['alle', '10', '12', '13'].map(k => `<button class="chip${S.klasse === k ? ' on' : ''}" data-a="kl" data-v="${k}">${kl(k)}</button>`).join('')}</div>`) +
+    `<div class="chips">${[['monat', 'Bu ay'], ['2w', 'Son 2 hafta'], ['alle', 'Tümü']].map(p => `<button class="chip${S.period === p[0] ? ' on' : ''}" data-a="per" data-v="${p[0]}">${p[1]}</button>`).join('')}</div>`;
+  return `${tabs}<div class="stats"><div><b>${L.length}</b><span>mentor</span></div><div class="${miss ? 'r' : ''}"><b>${miss}</b><span>raporu eksik</span></div><div class="${red ? 'r' : ''}"><b>${red}</b><span>öğrenci kırmızı</span></div><div><b>${stars}</b><span>Ayın Mentoru'na yakın</span></div></div>
+    ${filt}
+    ${S.staff.role !== 'mesul' && S.klasse === 'alle' ? ['10', '12', '13'].map(k => { const G = L.filter(m => m.klasse === k); const gm = G.filter(m => m.stats.missing.length).length, gr = G.reduce((a, m) => a + m.stats.red, 0), gs = G.reduce((a, m) => a + m.stats.students, 0);
+      return `<details class="card kls"><summary><div class="row"><b>${kl(k)} sınıf</b><span class="muted small">${G.length} mentor · ${gs} öğrenci</span></div><span class="tags">${gm ? `<span class="b red">${gm} mentorun raporu eksik</span>` : '<span class="b ok">raporlar ✓</span>'}${gr ? `<span class="b red">${gr} öğrenci kırmızı</span>` : ''}</span></summary><ul class="list men">${menList(G)}</ul></details>`; }).join('') : `<section class="card"><ul class="list men">${menList(L)}</ul></section>`}
+    <p class="muted small pad">Tüm veriler Google Sheet'te de var (filtrelenebilir).</p>`;
+}
+
+// ---------- Aktionen ----------
+function setMe(j) { S.me = j.me; S.cfg = j.cfg; if (j.token) { S.token = j.token; LS.set('rb-token', j.token); } }
+async function loadStaff(sel) {
+  try { const j = await api('staffData', { code: S.staff.code, mentor: sel || '' }); S.sd = j; S.cfg = j.cfg; S.staff = Object.assign(S.staff, j.who); }
+  catch (e) { toast(e.message); if (/gibt es nicht/.test(e.message)) logout(); }
+  render();
+}
+function logout() { LS.del('rb-token'); LS.del('rb-staff'); S = Object.assign(S, { mode: 'start', me: null, token: null, staff: null, sd: null, sel: null, ov: null, msg: '' }); render(); }
+function openMt(m) {
+  const w = S.week, def = w === monday(today()) ? today() : addDays(w, 4);
+  S.ov = { t: 'mt', d: m ? JSON.parse(JSON.stringify(m)) : { datum: def, uhrzeit: '', art: 'Yüz yüze', aktivitaet: '', thema: '', ort: '', anw: {} } }; S.msg = ''; render();
+}
+function keepOv() {
+  const o = S.ov; if (!o) return; const v = id => { const e = document.getElementById(id); return e ? e.value : undefined; };
+  const d = o.d;
+  ['datum:f-datum', 'uhrzeit:f-uhr', 'thema:f-thema', 'aktivitaet:f-akt', 'name:f-name', 'ort:f-ort', 'mitwem:f-mit', 'notiz:f-notiz', 'sid:f-sid', 'klasse:f-kl'].forEach(p => { const [k, id] = p.split(':'); const x = v(id); if (x !== undefined) d[k] = x; });
+  const a = document.getElementById('f-aktiv'); if (a) d.aktiv = a.checked;
+  document.querySelectorAll('[data-grund]').forEach(i => { d.grund = d.grund || {}; d.grund[i.dataset.grund] = i.value; });
+}
+async function busy(btn, f) { if (btn) btn.disabled = true; try { await f(); } catch (e) { S.msg = e.message; render(); toast(e.message, 3500); } if (btn) btn.disabled = false; }
+
+document.addEventListener('click', async e => {
+  const t = e.target.closest('[data-a]'); if (!t) return;
+  const a = t.dataset.a;
+  if (a === 'logout') return logout();
+  if (a === 'toggleReg') { S.reg = !S.reg; S.msg = ''; return render(); }
+  if (a === 'tab') { S.tab = t.dataset.v; S.extra = null; cetDraft = null; S.week = monday(today()); render(); return window.scrollTo(0, 0); }
+  if (a === 'wk') { S.week = addDays(S.week, +t.dataset.d); S.extra = null; cetDraft = null; return render(); }
+  if (a === 'goWk') { S.week = t.dataset.w; if (S.mode === 'mentor') S.tab = 'woche'; return render(); }
+  if (a === 'newMt') return openMt(null);
+  if (a === 'noMt') { S.ov = { t: 'no', d: { datum: S.week === monday(today()) ? today() : S.week, thema: '' } }; S.msg = ''; return render(); }
+  if (a === 'editMt') { const m = S.me.meetings.find(x => x.id === t.dataset.id); if (!m) return; if (m.art === 'Yapılmadı') { S.ov = { t: 'no', d: JSON.parse(JSON.stringify(m)) }; S.msg = ''; return render(); } return openMt(m); }
+  if (a === 'art') { keepOv(); S.ov.d.art = t.dataset.v; const ok = (OPTS[t.dataset.v] || []).map(o => o[0]); Object.keys(S.ov.d.anw).forEach(id => { if (!ok.includes(S.ov.d.anw[id])) delete S.ov.d.anw[id]; }); return render(); }
+  if (a === 'att') { keepOv(); S.ov.d.anw[t.dataset.id] = t.dataset.v; return render(); }
+  if (a === 'allDa') { keepOv(); const v = OPTS[S.ov.d.art][0][0]; S.me.students.filter(s => s.aktiv).forEach(s => S.ov.d.anw[s.id] = v); return render(); }
+  if (a === 'beg') { keepOv(); S.ov.d.begleitung = t.dataset.v; return render(); }
+  if (a === 'editSt') { const s = S.me.students.find(x => x.id === t.dataset.id); S.ov = { t: 'st', d: { id: s.id, name: s.name, aktiv: s.aktiv } }; S.msg = ''; return render(); }
+  if (a === 'newVeli') { S.ov = { t: 'veli', d: { sid: '', datum: today(), uhrzeit: '', begleitung: 'yalnız', mitwem: '', notiz: '' } }; S.msg = ''; return render(); }
+  if (a === 'editVeli') { const v = S.me.veli.find(x => x.id === t.dataset.id); const s = S.me.students.find(x => x.name === v.schuelerin); S.ov = { t: 'veli', d: Object.assign({}, v, { sid: s ? s.id : '' }) }; S.msg = ''; return render(); }
+  if (a === 'view') { S.view = t.dataset.v; return render(); }
+  if (a === 'cmode') { S.cmode = t.dataset.v; cetDraft = null; S.extra = null; return render(); }
+  if (a === 'cetDay') { S.cetDate = t.dataset.d; cetDraft = null; S.extra = null; render(); window.scrollTo(0, 0); return; }
+  if (a === 'addEig') { const cur = [...document.querySelectorAll('[data-eg="n"]')].map((n, i) => ({ n: n.value, v: document.querySelector(`[data-eg="v"][data-i="${i}"]`).value })); S.extra = cur.concat([{ n: '', v: '' }]); keepCet(); return render(); }
+  if (a === 'ovClose') { S.ov = null; S.msg = ''; return render(); }
+  if (a === 'ovSave') return busy(t, async () => {
+    keepOv(); const o = S.ov, d = o.d; S.msg = '';
+    let j;
+    if (o.t === 'mt') j = await api('saveMeeting', { token: S.token, id: d.id, datum: d.datum, uhrzeit: d.uhrzeit, art: d.art, aktivitaet: d.aktivitaet, thema: d.thema, ort: d.art === 'Online' ? '' : d.ort, anw: d.anw, grund: d.grund || {} });
+    if (o.t === 'no') j = await api('saveMeeting', { token: S.token, id: d.id, datum: d.datum, art: 'Yapılmadı', thema: d.thema, anw: {} });
+    if (o.t === 'st') j = await api('saveStudent', { token: S.token, id: d.id, name: d.name, aktiv: d.aktiv });
+    if (o.t === 'veli') j = await api('saveVeli', { token: S.token, id: d.id, sid: d.sid, datum: d.datum, uhrzeit: d.uhrzeit, begleitung: d.begleitung, mitwem: d.begleitung === 'yalnız' ? '' : d.mitwem, notiz: d.notiz });
+    if (o.t === 'ist') { j = await api('saveIstisare', { code: S.staff.code, id: d.id, datum: d.datum, klasse: d.klasse, thema: d.thema, teilnehmer: d.tn }); S.sd = j; S.ov = null; toast('Kaydedildi ✓'); return render(); }
+    setMe(j); if (o.t === 'mt' || o.t === 'no') S.week = monday(d.datum); S.ov = null; toast('Kaydedildi ✓'); render();
+  });
+  if (a === 'ovDel') return busy(t, async () => {
+    const o = S.ov; let j;
+    if (o.t === 'mt' || o.t === 'no') j = await api('deleteMeeting', { token: S.token, id: o.d.id });
+    if (o.t === 'veli') j = await api('deleteVeli', { token: S.token, id: o.d.id });
+    if (o.t === 'ist') { S.sd = await api('deleteIstisare', { code: S.staff.code, id: o.d.id }); S.ov = null; return render(); }
+    setMe(j); S.ov = null; toast('Silindi'); render();
+  });
+  // Mesul / Eyalet
+  if (a === 'stab') { S.stab = t.dataset.v; return render(); }
+  if (a === 'kl') { S.klasse = t.dataset.v; return render(); }
+  if (a === 'per') { S.period = t.dataset.v; return render(); }
+  if (a === 'sel') { S.sel = t.dataset.id; S.week = monday(today()); S.sd.detail = null; render(); window.scrollTo(0, 0); return loadStaff(S.sel); }
+  if (a === 'back') { S.sel = null; return render(); }
+  if (a === 'pin') return busy(t, async () => { const j = await api('resetPin', { code: S.staff.code, mentor: t.dataset.id }); S.pin[t.dataset.id] = j.pin; render(); });
+  if (a === 'newIst') { S.ov = { t: 'ist', d: { datum: today(), klasse: S.staff.role === 'mesul' ? S.staff.klasse : 'alle', thema: '', tn: [] } }; S.msg = ''; return render(); }
+  if (a === 'editIst') { const i = S.sd.ist.find(x => x.id === t.dataset.id); S.ov = { t: 'ist', d: { id: i.id, datum: i.datum, klasse: i.klasse, thema: i.thema, tn: i.teilnehmer.slice() } }; S.msg = ''; return render(); }
+  if (a === 'istTn') { const id = t.dataset.id, tn = S.ov.d.tn; if (t.checked) { if (!tn.includes(id)) tn.push(id); } else S.ov.d.tn = tn.filter(x => x !== id); return; }
+  if (a === 'istAll') { keepOv(); S.ov.d.tn = S.sd.list.filter(m => S.ov.d.klasse === 'alle' || m.klasse === S.ov.d.klasse).map(m => m.id); return render(); }
+});
+document.addEventListener('toggle', e => { if (e.target.classList && e.target.classList.contains('ocs') && e.target.open) S.ocOpen = e.target.querySelector('form').dataset.id; }, true);
+document.addEventListener('change', e => {
+  if (e.target.id === 'f-kl' && S.ov) { keepOv(); render(); }
+  if (e.target.id === 'cetdate') { S.cetDate = e.target.value; cetDraft = null; S.extra = null; render(); }
+});
+function keepCet() { const f = document.querySelector('form[data-f="cetele"]'); if (!f) return; cetDraft = Object.fromEntries(new FormData(f)); }
+document.addEventListener('submit', async e => {
+  e.preventDefault();
+  const f = e.target, k = f.dataset.f, btn = f.querySelector('[type=submit]');
+  await busy(btn, async () => {
+    S.msg = '';
+    if (k === 'mentor') { const j = await api(S.reg ? 'register' : 'login', { reg: f.reg ? f.reg.value : '', name: f.name.value, pin: f.pin.value }); setMe(j); S.mode = 'mentor'; S.tab = S.me.students.length ? 'woche' : 'schueler'; S.week = monday(today()); render(); return; }
+    if (k === 'staff') { const code = f.code.value.trim(); const j = await api('staffLogin', { code }); S.staff = Object.assign({ code }, j.who); S.cfg = j.cfg; LS.set('rb-staff', code); S.mode = 'staff'; S.week = monday(today()); render(); loadStaff(); return; }
+    if (k === 'student') { const j = await api('saveStudent', { token: S.token, name: f.name.value }); setMe(j); toast('Eklendi ✓'); render(); const i = document.querySelector('form[data-f="student"] input'); if (i) i.focus(); return; }
+    if (k === 'hedef') {
+      const fd = Object.fromEntries(new FormData(f));
+      const hh = f.dataset.id ? (S.cfg.oc || []).map((x, i) => fd['h' + i]) : fd;
+      const j = await api('saveHedef', { token: S.token, sid: f.dataset.id || '', h: hh });
+      setMe(j); toast('Hedef kaydedildi ✓'); render(); return;
+    }
+    if (k === 'oc') {
+      const fd = Object.fromEntries(new FormData(f)), v = (S.cfg.oc || []).map((x, i) => fd['v' + i]);
+      const j = await api('saveStuCet', { token: S.token, woche: S.week, sid: f.dataset.id, v, buch: fd.buch, seite: fd.seite });
+      setMe(j); S.ocOpen = null; toast('Kaydedildi ✓'); render(); return;
+    }
+    if (k === 'cetele') {
+      const fd = Object.fromEntries(new FormData(f)), vals = {};
+      S.cfg.cet.forEach(c => vals[c[0]] = fd[c[0]]);
+      const eig = [...document.querySelectorAll('[data-eg="n"]')].map((n, i) => ({ n: n.value, v: document.querySelector(`[data-eg="v"][data-i="${i}"]`).value }));
+      const j = await api('saveCetele', { token: S.token, datum: ($('#cetdate') || {}).value || today(), vals, eigene: eig, buch: fd.buch, seite: fd.seite });
+      setMe(j); S.extra = null; cetDraft = null; toast('Kaydedildi ✓'); render();
+    }
+  });
+});
+
+(async function init() {
+  if (!API) { S.mode = 'nocfg'; return render(); }
+  S.week = monday(today());
+  render();
+  const pre = window.RB_PRESET || {};
+  const tok = pre.token || LS.get('rb-token'), sc = pre.staff || LS.get('rb-staff');
+  if (tok) { try { S.token = tok; const j = await api('me', { token: tok }); setMe(j); S.mode = 'mentor'; return render(); } catch (e) { LS.del('rb-token'); } }
+  if (sc) { try { const j = await api('staffLogin', { code: sc }); S.staff = Object.assign({ code: sc }, j.who); S.cfg = j.cfg; S.mode = 'staff'; render(); return loadStaff(); } catch (e) { LS.del('rb-staff'); } }
+  S.mode = 'start'; render();
+})();
+}
+
+</script>
+</body>
+</html>
